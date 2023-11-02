@@ -10,6 +10,7 @@ import React, {
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { getDoc, doc } from "firebase/firestore";
 import { auth, db } from "../src/firebase";
+import toast from "react-hot-toast";
 
 import Login from "./components/login/login";
 import Signup from "./components/signup/signup";
@@ -29,7 +30,7 @@ import push from "./components/notification";
 function App() {
   const currentUser = useContext(AuthContext);
   const docIn = useRef(null);
-  const [userIsAdmin, setUserIsAdmin] = useState(false);
+  const [userIsAdmin, setUserIsAdmin] = useState(null);
 
   // ***************Notification permission*********************//
   async function notificationPermission() {
@@ -71,7 +72,16 @@ function App() {
       ) {
         const adminDocRef = doc(db, "admin-users", currentUser.id);
         const adminDoc = await getDoc(adminDocRef);
+        toast.promise(getDoc(adminDocRef), {
+          loading: "setting user is admin or not....",
+          success: "resolved... user is admin...",
+          error: (error) => {
+            toast.dismiss();
+            return error.code;
+          },
+        });
         //checking whether the user is admin or not
+        console.log(adminDoc);
         if (adminDoc.exists()) {
           setUserIsAdmin(true);
         } else {
@@ -136,6 +146,7 @@ function App() {
     } else if (currentUser === "Email verification pending in signup...") {
       return <Navigate to="/signup" />;
     } else {
+      console.log(userIsAdmin);
       if (userIsAdmin) {
         return <AdminPanel />;
       } else {

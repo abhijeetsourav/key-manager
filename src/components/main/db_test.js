@@ -26,7 +26,7 @@ const Name = () => {
   const [keyHolder, setKeyHolder] = useState({ id: "", name: "", phone: "" });
   const [userIsKeyHolder, setUserIsKeyHolder] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [currentUser, unsubscribe] = useContext(AuthContext);
+  const currentUser = useContext(AuthContext);
   const [claimingPersonsArr, setClaimingPersonsArr] = useState([]); //************
   const [userHasSentMsg, setUserHasSentMsg] = useState(false); //************
   const userIsAdmin = useRef(false);
@@ -79,7 +79,6 @@ const Name = () => {
           onSnapshot(keyClaimersCollection, async (collecSnapshot) => {
             try {
               //checking whether user is keyHolder or not
-              console.log("curreny user doc");
               if (keyHolder.id === currentUser.id) {
                 const arr = [];
                 collecSnapshot.forEach((doc) => {
@@ -217,7 +216,7 @@ const Name = () => {
                     Contact
                   </button>
                   {/* i have the key buttton */}
-                  {console.log(userHasSentMsg)}
+                  {/* {console.log(userHasSentMsg)} */}
                   {userIsKeyHolder ? (
                     <>
                       <button
